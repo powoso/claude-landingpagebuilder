@@ -1,0 +1,180 @@
+# PageCraft — AI Landing Page Builder
+
+> Describe your product in plain English. Get a complete, conversion-optimized landing page with clean HTML & Tailwind CSS — ready to deploy instantly.
+
+![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=nodedotjs&logoColor=white)
+![Claude](https://img.shields.io/badge/Powered%20by-Claude-7c3aed)
+![License](https://img.shields.io/badge/License-MIT-blue)
+
+---
+
+## What It Does
+
+PageCraft takes a plain-English description of your product or service and generates a **complete, single-file landing page** using Claude AI. The output includes:
+
+- **Navigation bar** with smooth-scroll links
+- **Hero section** with headline, subheadline, and CTA
+- **Social proof bar** (trusted-by logos)
+- **Features grid** with SVG icons
+- **How it works** section
+- **Testimonials** with placeholder avatars
+- **Pricing tiers** with feature comparison
+- **FAQ section**
+- **Final CTA** and **footer**
+
+All output is **self-contained HTML + Tailwind CSS** — no build step, no dependencies. Open the file in a browser or drop it on any static host.
+
+---
+
+## Features
+
+| Feature | Description |
+|---|---|
+| **Real-time streaming** | Watch your landing page build live as Claude generates it |
+| **Live preview** | Rendered in-browser with a realistic device chrome frame |
+| **Responsive preview** | Toggle between desktop, tablet, and mobile viewports |
+| **Code view** | Switch to see the raw HTML with monospace formatting |
+| **Download** | One-click download as `landing-page.html` |
+| **Copy to clipboard** | Copy the full HTML source instantly |
+| **Generation history** | Browse and reload past generations (session-based) |
+| **Keyboard shortcuts** | `⌘ Enter` to generate, `Esc` to go back |
+| **Example templates** | 3 built-in prompts to try immediately |
+
+---
+
+## macOS Installation
+
+### Prerequisites
+
+- **Node.js 18+** — install via [Homebrew](https://brew.sh) or the [official installer](https://nodejs.org)
+- **Anthropic API Key** — get one at [console.anthropic.com](https://console.anthropic.com)
+
+### Step-by-step setup
+
+#### 1. Install Node.js (if you don't have it)
+
+Using Homebrew (recommended):
+
+```bash
+brew install node
+```
+
+Or download the macOS installer from [nodejs.org](https://nodejs.org) (LTS recommended).
+
+Verify installation:
+
+```bash
+node --version   # Should show v18 or higher
+npm --version
+```
+
+#### 2. Clone the repository
+
+```bash
+git clone https://github.com/powoso/claude-landingpagebuilder.git
+cd claude-landingpagebuilder
+```
+
+#### 3. Install dependencies
+
+```bash
+npm install
+```
+
+#### 4. Set your Anthropic API key
+
+Option A — Export in your shell (temporary, current session only):
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-your-key-here
+```
+
+Option B — Add to your shell profile (persistent across sessions):
+
+```bash
+echo 'export ANTHROPIC_API_KEY=sk-ant-your-key-here' >> ~/.zshrc
+source ~/.zshrc
+```
+
+> **Note:** macOS uses `zsh` by default since Catalina. If you use `bash`, replace `~/.zshrc` with `~/.bash_profile`.
+
+#### 5. Start the app
+
+```bash
+npm start
+```
+
+The app will:
+- Start the server on `http://localhost:3000`
+- Automatically open your default browser on macOS
+
+That's it! Start describing your product and generate landing pages.
+
+---
+
+## Usage
+
+1. **Describe your product** — Enter a detailed description including the product name, key features, pricing, and target audience
+2. **Click Generate** (or press `⌘ Enter`) — Claude streams a complete landing page in real-time
+3. **Preview** — See the rendered page in a browser-like frame, toggle between desktop/tablet/mobile
+4. **Download or Copy** — Grab the HTML and deploy it anywhere
+
+### Tips for best results
+
+- **Be specific** — Include the product name, tagline, 3-6 features, pricing tiers, and who it's for
+- **Include pricing details** — Exact prices, plan names, and what's included in each tier
+- **Mention the tone** — "Professional", "playful", "minimal", "bold" all change the output
+- **Describe your audience** — "Enterprise DevOps teams" produces very different copy than "college students"
+
+### Example prompt
+
+```
+A SaaS tool called "FocusFlow" that helps remote teams track deep work hours,
+block distractions, and boost productivity. Target audience is remote engineering
+and design teams at startups.
+
+Features: AI-powered focus scoring, smart distraction blocker, team analytics
+dashboard, integrations with Slack/Notion/Linear.
+
+Pricing: Free (1 user), Pro $12/mo (unlimited + analytics), Team $29/mo/user
+(dashboard + integrations).
+
+Tagline: "Protect your team's focus. Ship faster."
+```
+
+---
+
+## Configuration
+
+| Environment Variable | Default | Description |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | (required) | Your Anthropic API key |
+| `PORT` | `3000` | Port the server runs on |
+| `OPEN_BROWSER` | `true` | Set to `false` to prevent auto-opening the browser |
+
+---
+
+## Deploying your generated pages
+
+The HTML files generated by PageCraft are fully self-contained. Deploy them anywhere:
+
+- **Netlify** — Drag and drop the HTML file at [app.netlify.com/drop](https://app.netlify.com/drop)
+- **Vercel** — `npx vercel --prod` in a folder with your HTML file
+- **GitHub Pages** — Commit the file to a `gh-pages` branch
+- **Cloudflare Pages** — Connect your repo or upload directly
+- **Any static host** — Upload the single HTML file
+
+---
+
+## Tech Stack
+
+- **Backend:** Node.js + Express
+- **AI:** Anthropic Claude API (claude-sonnet-4-20250514)
+- **Frontend:** Vanilla HTML/CSS/JS with Tailwind CSS
+- **Streaming:** Server-Sent Events (SSE)
+
+---
+
+## License
+
+MIT
