@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landing Page Builder — Powered by Claude</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    }
+
+    .accent-gradient {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+    }
+
+    .glow {
+      box-shadow: 0 0 60px rgba(99, 102, 241, 0.15);
+    }
+
+    .textarea-glow:focus {
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    .dot-1 { animation: pulse-dot 1.4s ease-in-out infinite; }
+    .dot-2 { animation: pulse-dot 1.4s ease-in-out 0.2s infinite; }
+    .dot-3 { animation: pulse-dot 1.4s ease-in-out 0.4s infinite; }
+
+    .preview-frame {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .tab-active {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border-color: #6366f1;
+    }
+
+    .tab-inactive {
+      color: #64748b;
+      border-color: transparent;
+    }
+
+    .tab-inactive:hover {
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .code-block {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      tab-size: 2;
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    #preview-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body class="gradient-bg min-h-screen font-sans text-white">
+
+  <!-- Header -->
+  <header class="border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg accent-gradient flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight">Landing Page Builder</h1>
+          <p class="text-xs text-slate-500">Powered by Claude</p>
+        </div>
+      </div>
+      <a href="https://docs.anthropic.com" target="_blank" class="text-sm text-slate-500 hover:text-slate-300 transition-colors">Docs</a>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Input Section -->
+    <section id="input-section" class="max-w-3xl mx-auto">
+      <div class="text-center mb-8">
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
+          Describe your product,<br>
+          <span class="bg-clip-text text-transparent accent-gradient">get a landing page.</span>
+        </h2>
+        <p class="text-slate-400 text-lg max-w-xl mx-auto">
+          Tell Claude about your product or service in plain English. Get a complete, conversion-optimized landing page with clean HTML &amp; Tailwind CSS — ready to deploy.
+        </p>
+      </div>
+
+      <div class="bg-white/[0.03] border border-white/10 rounded-2xl p-6 glow">
+        <label for="description" class="block text-sm font-medium text-slate-300 mb-2">
+          Product / Service Description
+        </label>
+        <textarea
+          id="description"
+          rows="6"
+          class="w-full bg-white/[0.04] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-600 resize-none textarea-glow focus:outline-none focus:border-indigo-500/50 transition-all"
+          placeholder="Example: A SaaS tool called 'FocusFlow' that helps remote teams track deep work hours, block distractions, and boost productivity. It has a free tier, a $12/mo Pro plan, and a $29/mo Team plan. The main value props are: AI-powered focus scoring, distraction blocking, and team analytics dashboard."
+        ></textarea>
+
+        <div class="flex items-center justify-between mt-4">
+          <p class="text-xs text-slate-600">Be specific — include product name, pricing, features, and target audience for best results.</p>
+          <button
+            id="generate-btn"
+            onclick="generateLandingPage()"
+            class="accent-gradient px-6 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Generate Page
+          </button>
+        </div>
+      </div>
+
+      <!-- Example prompts -->
+      <div class="mt-6">
+        <p class="text-xs text-slate-600 mb-3 text-center">Try an example:</p>
+        <div class="flex flex-wrap gap-2 justify-center">
+          <button onclick="useExample(0)" class="text-xs px-3 py-1.5 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all">
+            SaaS Productivity Tool
+          </button>
+          <button onclick="useExample(1)" class="text-xs px-3 py-1.5 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all">
+            Online Course Platform
+          </button>
+          <button onclick="useExample(2)" class="text-xs px-3 py-1.5 rounded-full border border-white/10 text-slate-400 hover:text-white hover:border-white/20 transition-all">
+            Mobile Fitness App
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Generation / Output Section (hidden initially) -->
+    <section id="output-section" class="hidden fade-in">
+
+      <!-- Status bar -->
+      <div id="status-bar" class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <button onclick="goBack()" class="text-sm text-slate-500 hover:text-white transition-colors flex items-center gap-1">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+            New Page
+          </button>
+          <div id="generating-indicator" class="flex items-center gap-2 text-sm text-indigo-400">
+            <span class="dot-1 w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block"></span>
+            <span class="dot-2 w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block"></span>
+            <span class="dot-3 w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block"></span>
+            <span>Generating your landing page...</span>
+          </div>
+          <div id="done-indicator" class="hidden flex items-center gap-2 text-sm text-emerald-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            Landing page ready
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="downloadHTML()" id="download-btn" class="hidden text-sm px-4 py-2 rounded-lg border border-white/10 text-slate-300 hover:text-white hover:border-white/20 transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            Download HTML
+          </button>
+          <button onclick="copyHTML()" id="copy-btn" class="hidden text-sm px-4 py-2 rounded-lg border border-white/10 text-slate-300 hover:text-white hover:border-white/20 transition-all flex items-center gap-2">
+            <svg id="copy-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <span id="copy-text">Copy HTML</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="flex gap-1 mb-4 border-b border-white/5 pb-px">
+        <button onclick="switchTab('preview')" id="tab-preview" class="tab-active px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all">
+          Preview
+        </button>
+        <button onclick="switchTab('code')" id="tab-code" class="tab-inactive px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all">
+          HTML Code
+        </button>
+      </div>
+
+      <!-- Preview Panel -->
+      <div id="panel-preview" class="preview-frame rounded-xl overflow-hidden border border-white/10" style="height: 70vh;">
+        <iframe id="preview-iframe" sandbox="allow-scripts allow-same-origin" title="Landing page preview"></iframe>
+      </div>
+
+      <!-- Code Panel -->
+      <div id="panel-code" class="hidden rounded-xl overflow-hidden border border-white/10" style="height: 70vh;">
+        <pre id="code-output" class="code-block overflow-auto h-full p-6 m-0 whitespace-pre-wrap"></pre>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    const examples = [
+      `A SaaS productivity tool called "FocusFlow" that helps remote teams track deep work hours, block distractions, and boost productivity. Target audience is remote engineering and design teams at startups.\n\nKey features:\n- AI-powered focus scoring that rates your deep work quality\n- Smart distraction blocker that learns your patterns\n- Team analytics dashboard with weekly reports\n- Integrates with Slack, Notion, and Linear\n\nPricing:\n- Free: 1 user, basic focus tracking\n- Pro ($12/mo): Unlimited tracking, distraction blocker, personal analytics\n- Team ($29/mo per user): Team dashboard, manager reports, integrations\n\nThe tagline is "Protect your team's focus. Ship faster."`,
+
+      `An online course platform called "SkillForge" where expert creators can build and sell interactive coding courses with built-in code editors, AI-graded assignments, and completion certificates.\n\nTarget audience: Software engineers and tech educators who want to monetize their knowledge.\n\nKey features:\n- In-browser code editor with 20+ language support\n- AI-powered assignment grading with detailed feedback\n- Branded completion certificates\n- Student analytics and engagement tracking\n- Stripe integration for payments\n\nPricing:\n- Starter (Free): 1 course, up to 50 students\n- Creator ($29/mo): Unlimited courses, certificates, analytics\n- Business ($79/mo): Custom branding, API access, priority support\n\nTagline: "Turn your expertise into income."`,
+
+      `A mobile fitness app called "PulseCoach" that creates personalized AI workout plans based on your goals, equipment, and schedule. It adapts in real-time based on your performance and recovery.\n\nTarget audience: Busy professionals (25-45) who want to stay fit without a personal trainer.\n\nKey features:\n- AI workout generator that adapts to your progress\n- Real-time form checking using phone camera\n- Recovery tracking with sleep and HRV integration\n- 500+ exercise video library\n- Social challenges with friends\n\nPricing:\n- Free: 3 workouts/week, basic exercises\n- Premium ($9.99/mo): Unlimited AI plans, form check, recovery tracking\n- Annual ($79.99/yr): Everything in Premium, save 33%\n\nTagline: "Your AI personal trainer. Always in your pocket."`
+    ];
+
+    let generatedHTML = "";
+    let currentTab = "preview";
+
+    function useExample(index) {
+      document.getElementById("description").value = examples[index];
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById("tab-preview").className = tab === "preview" ? "tab-active px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all" : "tab-inactive px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all";
+      document.getElementById("tab-code").className = tab === "code" ? "tab-active px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all" : "tab-inactive px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all";
+      document.getElementById("panel-preview").className = tab === "preview" ? "preview-frame rounded-xl overflow-hidden border border-white/10" : "hidden";
+      document.getElementById("panel-code").className = tab === "code" ? "rounded-xl overflow-hidden border border-white/10" : "hidden";
+      document.getElementById("panel-preview").style.height = "70vh";
+      document.getElementById("panel-code").style.height = "70vh";
+    }
+
+    function updatePreview() {
+      const iframe = document.getElementById("preview-iframe");
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      doc.open();
+      doc.write(generatedHTML);
+      doc.close();
+    }
+
+    async function generateLandingPage() {
+      const description = document.getElementById("description").value.trim();
+      if (!description) {
+        document.getElementById("description").focus();
+        return;
+      }
+
+      // Switch to output view
+      document.getElementById("input-section").classList.add("hidden");
+      document.getElementById("output-section").classList.remove("hidden");
+      document.getElementById("generating-indicator").classList.remove("hidden");
+      document.getElementById("done-indicator").classList.add("hidden");
+      document.getElementById("download-btn").classList.add("hidden");
+      document.getElementById("copy-btn").classList.add("hidden");
+      document.getElementById("generate-btn").disabled = true;
+
+      generatedHTML = "";
+      document.getElementById("code-output").textContent = "";
+      switchTab("preview");
+
+      try {
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ description }),
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.error || "Generation failed");
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n\n");
+          buffer = lines.pop();
+
+          for (const line of lines) {
+            if (!line.startsWith("data: ")) continue;
+            const jsonStr = line.slice(6);
+            try {
+              const data = JSON.parse(jsonStr);
+              if (data.error) throw new Error(data.error);
+              if (data.done) break;
+              if (data.text) {
+                generatedHTML += data.text;
+                document.getElementById("code-output").textContent = generatedHTML;
+                updatePreview();
+              }
+            } catch (e) {
+              if (e.message !== "Unexpected end of JSON input") {
+                console.error("Parse error:", e);
+              }
+            }
+          }
+        }
+
+        // Done
+        document.getElementById("generating-indicator").classList.add("hidden");
+        document.getElementById("done-indicator").classList.remove("hidden");
+        document.getElementById("done-indicator").style.display = "flex";
+        document.getElementById("download-btn").classList.remove("hidden");
+        document.getElementById("download-btn").style.display = "flex";
+        document.getElementById("copy-btn").classList.remove("hidden");
+        document.getElementById("copy-btn").style.display = "flex";
+
+      } catch (err) {
+        document.getElementById("generating-indicator").innerHTML = `
+          <span class="text-red-400 text-sm">Error: ${escapeHTML(err.message)}</span>
+        `;
+      }
+
+      document.getElementById("generate-btn").disabled = false;
+    }
+
+    function goBack() {
+      document.getElementById("output-section").classList.add("hidden");
+      document.getElementById("input-section").classList.remove("hidden");
+    }
+
+    function downloadHTML() {
+      const blob = new Blob([generatedHTML], { type: "text/html" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "landing-page.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function copyHTML() {
+      navigator.clipboard.writeText(generatedHTML).then(() => {
+        document.getElementById("copy-text").textContent = "Copied!";
+        setTimeout(() => {
+          document.getElementById("copy-text").textContent = "Copy HTML";
+        }, 2000);
+      });
+    }
+
+    function escapeHTML(str) {
+      const div = document.createElement("div");
+      div.textContent = str;
+      return div.innerHTML;
+    }
+  </script>
+
+</body>
+</html>
